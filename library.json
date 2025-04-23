@@ -1,0 +1,34 @@
+[
+  {
+    "title": "Phyton Crash Course"
+    "author": "Eric Matthes",
+    "publication_year": "2019",
+    "genre": "Programming",
+    "read_status": false,
+    "added_data": "2025-04-23 10:39"
+  },
+  {  
+    "title": "Effective Python",  
+    "author": "Brett Slatkin",  
+    "publication_year": "2015",  
+    "genre": "Programming",  
+    "read_status": false,  
+    "added_data": "2025-04-23 10:20"   
+ },
+  {
+    "title": "Automate the Boring Stuff with Python",  
+    "author": "Al Sweigart",  
+    "publication_year": "2015",  
+    "genre": "Programming",  
+    "read_status": false,  
+    "added_data": "2025-04-23 10:50"  
+  },
+  {
+    "title": "Learning Python",  
+    "author": "Mark Lutz",  
+    "publication_year": "2013",  
+    "genre": "Programming",  
+    "read_status": false,  
+    "added_data": "2025-04-23 11:00"
+  },
+]
