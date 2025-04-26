@@ -1,76 +1,112 @@
-import streamlit as st
 import json
-import os
-from datetime import datetime
 
-st.set_page_config(page_title="Simple Library", layout="wide")
+library = []
 
-# Session State Initialization
-if "library" not in st.session_state:
-    st.session_state.library = []
+def display_menu():
+    print("Welcome to your Personal Library Manager!")
+    print("1. Add a book")
+    print("2. Remove a book")
+    print("3. Search for a book")
+    print("4. Display all books")
+    print("5. Display statistics")
+    print("6. Exit")
 
-# Load and Save Functions
-def load_library():
-    if os.path.exists("library.json"):
-        with open("library.json", "r") as file:
-            st.session_state.library = json.load(file)
-
-def save_library():
-    with open("library.json", "w") as file:
-        json.dump(st.session_state.library, file)
-
-# Add Book Function
-def add_book(title, author, year):
+def add_book():
+    title = input("Enter the book title: ")
+    author = input("Enter the author: ")
+    year = int(input("Enter the publication year: "))
+    genre = input("Enter the genre: ")
+    read = input("Have you read this book? (yes/no): ").lower() == "yes"
     book = {
         "title": title,
         "author": author,
         "year": year,
-        "added": datetime.now().strftime("%Y-%m-%d")
+        "genre": genre,
+        "read": read
     }
-    st.session_state.library.append(book)
-    save_library()
+    library.append(book)
+    print("Book added successfully!")
 
-# Remove Book Function
-def remove_book(index):
-    if 0 <= index < len(st.session_state.library):
-        del st.session_state.library[index]
-        save_library()
+def remove_book():
+    title = input("Enter the title of the book to remove: ")
+    for book in library:
+        if book["title"] == title:
+            library.remove(book)
+            print("Book removed successfully!")
+            return
+    print("Book not found!")
 
-# Load Library Data
-load_library()
-
-# Sidebar Navigation
-page = st.sidebar.selectbox("Select a page", ["View Library", "Add Book"])
-
-# Main Title
-st.title("📚 Simple Personal Library")
-
-# Add Book Page
-if page == "Add Book":
-    st.subheader("Add a New Book")
-    title = st.text_input("Title")
-    author = st.text_input("Author")
-    year = st.number_input("Year", min_value=1000, max_value=datetime.now().year, value=2024)
-    
-    if st.button("Add Book"):
-        if title and author:
-            add_book(title, author, year)
-            st.success("Book added successfully!")
-        else:
-            st.warning("Please enter both title and author")
-
-# View Library Page
-elif page == "View Library":
-    st.subheader("Your Library")
-    
-    if not st.session_state.library:
-        st.info("Library is empty. Add some books!")
+def search_book():
+    print("Search by:")
+    print("1. Title")
+    print("2. Author")
+    search_choice = input("Enter your choice: ")
+    if search_choice == "1":
+        title = input("Enter the title: ")
+        matching_books = [book for book in library if book["title"] == title]
+    elif search_choice == "2":
+        author = input("Enter the author: ")
+        matching_books = [book for book in library if book["author"] == author]
     else:
-        for i, book in enumerate(st.session_state.library):
-            st.write(f"### {book['title']}")
-            st.write(f"Author: {book['author']}")
-            st.write(f"Year: {book['year']}")
-            st.write(f"Added: {book['added']}")
-            if st.button("Remove", key=f"remove_{i}"):
-                remove_book(i)
-                st.experimental_rerun()
+        print("Invalid choice!")
+        return
+    if matching_books:
+        print("Matching Books:")
+        for i, book in enumerate(matching_books, 1):
+            print(f"{i}. {book['title']} by {book['author']} ({book['year']}) - {book['genre']} - {'Read' if book['read'] else 'Unread'}")
+    else:
+        print("No matching books found.")
+
+def display_all_books():
+    if not library:
+        print("Your library is empty.")
+        return
+    print("Your Library:")
+    for i, book in enumerate(library, 1):
+        print(f"{i}. {book['title']} by {book['author']} ({book['year']}) - {book['genre']} - {'Read' if book['read'] else 'Unread'}")
+
+def display_statistics():
+    total_books = len(library)
+    read_books = sum(book["read"] for book in library)
+    percentage_read = (read_books / total_books) * 100 if total_books > 0 else 0
+    print(f"Total books: {total_books}")
+    print(f"Percentage read: {percentage_read}%")
+
+def save_library():
+    with open("library.txt", "w") as file:
+        json.dump(library, file)
+    print("Library saved to file.")
+
+def load_library():
+    global library
+    try:
+        with open("library.txt", "r") as file:
+            library = json.load(file)
+        print("Library loaded from file.")
+    except FileNotFoundError:
+        print("No saved library found.")
+
+def main():
+    load_library()
+    while True:
+        display_menu()
+        choice = input("Enter your choice: ")
+        if choice == "1":
+            add_book()
+        elif choice == "2":
+            remove_book()
+        elif choice == "3":
+            search_book()
+        elif choice == "4":
+            display_all_books()
+        elif choice == "5":
+            display_statistics()
+        elif choice == "6":
+            save_library()
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
