@@ -86,7 +86,7 @@ st.markdown("""
             border-radius: 0.375rem;
         }
 </style>
-"""), unsafe_allow_html=True
+""", unsafe_allow_html=True)
 
 
 def load_lottieurl(url):
